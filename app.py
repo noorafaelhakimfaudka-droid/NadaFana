@@ -1,5 +1,5 @@
 """
-NadaFana — AI-Powered Indie & Mellow Music Recommendation Engine
+NadaFana — AI-Powered Indonesian Music Recommendation Engine
 Ultra-polished Modern UI/UX Streamlit Interface
 """
 
@@ -22,7 +22,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 # 1. Konfigurasi Halaman & Metadata
 # ----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="NadaFana — AI Indie & Mellow Music Discovery",
+    page_title="NadaFana — AI Indonesian Music Discovery",
     page_icon=None,
     layout="wide",
     initial_sidebar_state="expanded",
@@ -669,9 +669,9 @@ with col_hero_1:
     st.markdown('<h1 class="hero-title">NadaFana</h1>', unsafe_allow_html=True)
     st.markdown(
         '<p class="hero-subtitle">'
-        'Jelajahi ratusan lagu balada & indie mellow Indonesia — '
+        'Jelajahi ribuan lagu Indonesia dari berbagai genre — '
         'cukup pilih lagu favorit atau ceritakan perasaanmu, '
-        'dan kami akan mencarikan lagu-lagu yang paling cocok dengan suasana hatimu.'
+        'dan kami akan mencarikan lagu-lagu yang paling cocok dengan selera musikmu.'
         '</p>',
         unsafe_allow_html=True,
     )
@@ -693,7 +693,7 @@ with col_hero_2:
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
             <div class="stat-card">
                 <div class="stat-val">{len(df_indo):,}</div>
-                <div class="stat-sub">Lagu Mellow</div>
+                <div class="stat-sub">Lagu Indonesia</div>
             </div>
             <div class="stat-card">
                 <div class="stat-val">AI</div>
@@ -705,7 +705,7 @@ with col_hero_2:
             </div>
             <div class="stat-card">
                 <div class="stat-val">Indie</div>
-                <div class="stat-sub">Pilihan Kurasi</div>
+                <div class="stat-sub">Semua Genre</div>
             </div>
         </div>
         """,
@@ -720,7 +720,7 @@ st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
 tab_pilih, tab_teks, tab_katalog = st.tabs([
     "Berdasarkan Lagu Favorit",
     "Berdasarkan Mood & Cerita",
-    "Jelajahi Spektrum Mellow",
+    "Jelajahi Koleksi Musik",
 ])
 
 # ============================================================================
@@ -894,7 +894,7 @@ with tab_teks:
 # ============================================================================
 with tab_katalog:
     st.markdown(
-        "<p style='color:#78716c; margin-top: 6px;'>Telusuri koleksi lagu mellow pilihan berdasarkan suasana — dari yang paling akustik hingga yang paling menyentuh hati.</p>",
+        "<p style='color:#78716c; margin-top: 6px;'>Telusuri koleksi lagu Indonesia pilihan berdasarkan suasana — dari yang paling akustik hingga yang paling menyentuh hati.</p>",
         unsafe_allow_html=True,
     )
 
@@ -944,7 +944,7 @@ with st.sidebar:
     st.markdown("### Tentang NadaFana")
     st.markdown(
         """
-        NadaFana menganalisis **ratusan lagu mellow & indie Indonesia** untuk mencarikan musik yang paling cocok dengan selera dan perasaanmu.
+        NadaFana menganalisis **ribuan lagu Indonesia dari berbagai genre** untuk mencarikan musik yang paling cocok dengan selera dan perasaanmu.
 
         Kami memadukan kemiripan **irama & nuansa musik** dengan **makna cerita di balik lirik** — sehingga rekomendasi yang kamu dapatkan benar-benar terasa personal.
         """
@@ -956,9 +956,9 @@ with st.sidebar:
         """
         - **Berdasarkan Lagu** — Pilih lagu favorit, temukan lagu-lagu serupa.
         - **Berdasarkan Perasaan** — Ceritakan suasana hatimu dengan kata-kata.
-        - **Jelajahi Koleksi** — Telusuri lagu berdasarkan suasana tertentu.
+        - **Jelajahi Koleksi** — Telusuri lagu Indonesia berdasarkan suasana tertentu.
         """
     )
 
     st.markdown("---")
-    st.caption("Dibuat untuk pecinta musik balada & indie Indonesia.")
+    st.caption("Dibuat untuk pecinta musik Indonesia.")

@@ -1,8 +1,8 @@
-# 🎵 NadaFana — AI-Powered Indie & Mellow Music Discovery
+# 🎵 NadaFana — AI-Powered Indonesian Music Discovery
 
-> **Sistem Kurasi dan Rekomendasi Musik Indie & Mellow Berbasis Machine Learning dan NLP Semantik.**
+> **Sistem Kurasi dan Rekomendasi Musik Indonesia Berbasis Machine Learning dan NLP Semantik.**
 
-NadaFana lahir dari kebutuhan untuk mengkurasi lagu-lagu berirama tenang, balada, dan *mellow* berbahasa Indonesia secara akurat dan bermakna—melampaui batasan rekomendasi berbasis popularitas standar.
+NadaFana lahir dari kebutuhan untuk mengkurasi lagu-lagu berbahasa Indonesia secara akurat dan bermakna—melampaui batasan rekomendasi berbasis popularitas standar.
 
 Proyek ini menggabungkan riset *data science* skala besar (pemrosesan 950K+ lagu Spotify) dengan antarmuka web interaktif yang intuitif dan elegan.
 
@@ -14,9 +14,9 @@ Riset data science dan pemodelan inti pada proyek ini dikerjakan secara komprehe
 
 1. **Pemrosesan Data Skala Penuh (Full Scale ~950K Trek):**
    - Mengolah dataset Spotify berskala masif yang mencakup atribut audio dan lirik lagu.
-2. **Clustering Efisien & Deteksi Klaster Otomatis:**
-   - Menggunakan `MiniBatchKMeans` untuk mengelompokkan karakteristik audio secara efisien tanpa kendala memori.
-   - Klaster *mellow* dideteksi secara dinamis berdasarkan kombinasi nilai *valence* (suasana positif/sedih) dan *energy* terendah dari *centroid* klaster.
+2. **Clustering Audio (MiniBatchKMeans):**
+   - Menggunakan `MiniBatchKMeans` untuk mengelompokkan karakteristik audio secara efisien.
+   - Informasi klaster dipertahankan sebagai fitur tambahan, namun **tidak digunakan sebagai filter** — seluruh lagu Indonesia dari semua genre disertakan.
 3. **Deteksi Bahasa Berbasis AI (fastText):**
    - Menggunakan model `fastText` teroptimasi untuk mengklasifikasikan lirik berbahasa Indonesia secara akurat dan menepis *false positives* dari metode heuristik biasa.
 4. **NLP Semantik (Sentence Embeddings):**
@@ -52,8 +52,8 @@ project_1/
 ├── .gitignore                    # Berkas yang diabaikan oleh Git
 ├── NadaFana.ipynb                # Notebook riset inti (Data Science, NLP & ML)
 ├── app.py                        # Aplikasi antarmuka web Streamlit
-├── df_lagu_mellow_indo.parquet   # Dataset terkurasi & tersanitasi lagu mellow Indonesia (453 lagu)
-├── embeddings_lagu_mellow.npy    # Vektor embedding lirik hasil Sentence-Transformers (453x384)
+├── df_lagu_mellow_indo.parquet   # Dataset terkurasi & tersanitasi lagu Indonesia (~1400+ lagu)
+├── embeddings_lagu_mellow.npy    # Vektor embedding lirik hasil Sentence-Transformers
 ├── index_lagu_mellow.faiss       # Indeks pencarian vektor FAISS
 ├── clean_dataset_artifacts.py    # Skrip sanitasi & kurasi dataset
 ├── requirements.txt              # Daftar pustaka dependensi Python
