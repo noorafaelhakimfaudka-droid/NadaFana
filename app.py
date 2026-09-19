@@ -433,7 +433,7 @@ st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 # 3. Data & Artifact Loader (Cached)
 # ----------------------------------------------------------------------------
 @st.cache_resource(show_spinner="Menyiapkan koleksi musik...")
-def load_artifacts():
+def _load_artifacts_cached(parquet_mtime, embed_mtime):
     missing = [p for p in (PATH_PARQUET, PATH_EMBED) if not os.path.exists(p)]
     if missing:
         return None, None, missing
@@ -442,6 +442,12 @@ def load_artifacts():
     df_indo["artists"] = df_indo["artists"].fillna("Artis Tidak Diketahui")
     embeddings = np.load(PATH_EMBED)
     return df_indo, embeddings, []
+
+
+def load_artifacts():
+    p_mtime = os.path.getmtime(PATH_PARQUET) if os.path.exists(PATH_PARQUET) else 0
+    e_mtime = os.path.getmtime(PATH_EMBED) if os.path.exists(PATH_EMBED) else 0
+    return _load_artifacts_cached(p_mtime, e_mtime)
 
 
 @st.cache_resource(show_spinner="Menyiapkan pencarian teks...")
