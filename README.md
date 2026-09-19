@@ -52,8 +52,10 @@ project_1/
 ├── .gitignore                    # Berkas yang diabaikan oleh Git
 ├── NadaFana.ipynb                # Notebook riset inti (Data Science, NLP & ML)
 ├── app.py                        # Aplikasi antarmuka web Streamlit
-├── df_lagu_mellow_indo.parquet   # Dataset terkurasi lagu mellow Indonesia (~640 KB)
-├── embeddings_lagu_mellow.npy    # Vektor embedding lirik hasil Sentence-Transformers (~820 KB)
+├── df_lagu_mellow_indo.parquet   # Dataset terkurasi & tersanitasi lagu mellow Indonesia (453 lagu)
+├── embeddings_lagu_mellow.npy    # Vektor embedding lirik hasil Sentence-Transformers (453x384)
+├── index_lagu_mellow.faiss       # Indeks pencarian vektor FAISS
+├── clean_dataset_artifacts.py    # Skrip sanitasi & kurasi dataset
 ├── requirements.txt              # Daftar pustaka dependensi Python
 └── README.md                     # Dokumentasi proyek
 ```
@@ -86,6 +88,10 @@ pip install -r requirements.txt
 
 ### 4. Jalankan Aplikasi
 ```bash
+# Menggunakan modul Python (direkomendasikan untuk Windows):
+python -m streamlit run app.py
+
+# Atau jika CLI streamlit sudah terdaftar di PATH:
 streamlit run app.py
 ```
 Aplikasi otomatis terbuka di peramban Anda pada alamat `http://localhost:8501`.
