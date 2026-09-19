@@ -29,8 +29,20 @@ st.set_page_config(
 )
 
 ARTIFACT_DIR = os.path.dirname(os.path.abspath(__file__))
-PATH_PARQUET = os.path.join(ARTIFACT_DIR, "df_lagu_mellow_indo.parquet")
-PATH_EMBED = os.path.join(ARTIFACT_DIR, "embeddings_lagu_mellow.npy")
+
+# Prioritaskan berkas artefak terbaru (*_indo.*), dengan fallback ke berkas lama jika ada
+PATH_PARQUET = os.path.join(ARTIFACT_DIR, "df_lagu_indo.parquet")
+if not os.path.exists(PATH_PARQUET):
+    PATH_PARQUET = os.path.join(ARTIFACT_DIR, "df_lagu_mellow_indo.parquet")
+
+PATH_EMBED = os.path.join(ARTIFACT_DIR, "embeddings_lagu_indo.npy")
+if not os.path.exists(PATH_EMBED):
+    PATH_EMBED = os.path.join(ARTIFACT_DIR, "embeddings_lagu_mellow.npy")
+
+PATH_FAISS = os.path.join(ARTIFACT_DIR, "index_lagu_indo.faiss")
+if not os.path.exists(PATH_FAISS):
+    PATH_FAISS = os.path.join(ARTIFACT_DIR, "index_lagu_mellow.faiss")
+
 EMBED_MODEL_NAME = "paraphrase-multilingual-MiniLM-L12-v2"
 
 # ----------------------------------------------------------------------------
@@ -511,14 +523,16 @@ def rekomendasikan_dari_index(df_indo, embeddings, idx_lagu, jumlah=5, bobot_aud
     return hasil
 
 
-def rekomendasikan_dari_teks(df_indo, embeddings, model_embed, teks_query, jumlah=5, vibe_filter="Semua Karakter Mellow"):
+def rekomendasikan_dari_teks(df_indo, embeddings, model_embed, teks_query, jumlah=5, vibe_filter="Semua Nuansa & Genre"):
     """
     Rekomendasi dari teks suasana hati dengan opsi penyelarasan preferensi nuansa audio.
     """
     vibe_profiles = {
-        "Paling Melankolis & Sedih": np.array([0.15, 0.75, 0.25, 0.35], dtype=np.float32),
-        "Sangat Hening & Akustik": np.array([0.25, 0.92, 0.15, 0.30], dtype=np.float32),
-        "Santai & Hangat (Mid-Tempo)": np.array([0.40, 0.60, 0.40, 0.55], dtype=np.float32),
+        "Paling Melankolis & Sedih": np.array([0.18, 0.70, 0.25, 0.35], dtype=np.float32),
+        "Sangat Hening & Akustik": np.array([0.28, 0.90, 0.18, 0.30], dtype=np.float32),
+        "Santai & Hangat (Mid-Tempo)": np.array([0.45, 0.50, 0.40, 0.55], dtype=np.float32),
+        "Energik & Penuh Semangat": np.array([0.70, 0.20, 0.80, 0.65], dtype=np.float32),
+        "Irama Dansa & Ceria": np.array([0.75, 0.15, 0.70, 0.85], dtype=np.float32),
     }
     target_audio = vibe_profiles.get(vibe_filter)
     audio_cols = ["valence", "acousticness", "energy", "danceability"]
@@ -559,8 +573,8 @@ def rekomendasikan_dari_teks(df_indo, embeddings, model_embed, teks_query, jumla
         top_indices = np.argsort(sim_lirik)[::-1][:jumlah]
         hasil = [(int(idx), float(sim_lirik[idx])) for idx in top_indices if sim_lirik[idx] > 0.0]
         if not hasil:
-            top_mellow = df_indo.sort_values(by="valence", ascending=True).head(jumlah).index
-            hasil = [(df_indo.index.get_loc(idx_val), 0.65) for idx_val in top_mellow]
+            top_fallback = df_indo.sort_values(by="valence", ascending=True).head(jumlah).index
+            hasil = [(df_indo.index.get_loc(idx_val), 0.65) for idx_val in top_fallback]
 
     return hasil, engine_type
 
@@ -704,7 +718,7 @@ with col_hero_2:
                 <div class="stat-sub">Pencarian</div>
             </div>
             <div class="stat-card">
-                <div class="stat-val">Indie</div>
+                <div class="stat-val">Lokal</div>
                 <div class="stat-sub">Semua Genre</div>
             </div>
         </div>
@@ -858,10 +872,12 @@ with tab_teks:
         vibe_filter = st.selectbox(
             "Karakter musik:",
             [
-                "Semua Karakter Mellow",
+                "Semua Nuansa & Genre",
                 "Paling Melankolis & Sedih",
                 "Sangat Hening & Akustik",
                 "Santai & Hangat (Mid-Tempo)",
+                "Energik & Penuh Semangat",
+                "Irama Dansa & Ceria",
             ],
             key="select_vibe_teks",
             help="Pilih karakter musik yang kamu inginkan untuk hasil pencarian.",
@@ -890,11 +906,11 @@ with tab_teks:
         render_hasil_cards(df_indo, st.session_state["hasil_tab2"], show_player=show_player_teks)
 
 # ============================================================================
-# TAB 3: Jelajahi Spektrum Mellow
+# TAB 3: Jelajahi Koleksi Musik Indonesia
 # ============================================================================
 with tab_katalog:
     st.markdown(
-        "<p style='color:#78716c; margin-top: 6px;'>Telusuri koleksi lagu Indonesia pilihan berdasarkan suasana — dari yang paling akustik hingga yang paling menyentuh hati.</p>",
+        "<p style='color:#78716c; margin-top: 6px;'>Telusuri koleksi lagu Indonesia pilihan berdasarkan suasana — dari yang paling akustik hingga yang paling energik.</p>",
         unsafe_allow_html=True,
     )
 
@@ -904,23 +920,27 @@ with tab_katalog:
             "Paling Akustik",
             "Paling Melankolis",
             "Paling Tenang",
-            "Paling Santai",
+            "Paling Energik",
+            "Paling Dansa / Ceria",
         ],
         horizontal=True,
     )
 
     if "Paling Akustik" in kategori:
         df_curated = df_indo.sort_values(by="acousticness", ascending=False).head(6)
-        desc = "Lagu-lagu dengan dominasi instrumen akustik alami — gitar kopong, piano lembut, cello."
+        desc = "Lagu-lagu dengan dominasi instrumen akustik alami — gitar akustik, piano lembut, cello."
     elif "Paling Melankolis" in kategori:
         df_curated = df_indo.sort_values(by="valence", ascending=True).head(6)
-        desc = "Lagu-lagu dengan rasa sedih & sendu yang paling mendalam."
+        desc = "Lagu-lagu dengan nuansa sendu dan melankolis yang paling menyentuh hati."
     elif "Paling Tenang" in kategori:
         df_curated = df_indo.sort_values(by="energy", ascending=True).head(6)
-        desc = "Lagu-lagu bertempo hening dan lembut, cocok didengarkan sebelum tidur atau saat malam larut."
+        desc = "Lagu-lagu bertempo hening dan lembut, menenangkan suasana hati."
+    elif "Paling Energik" in kategori:
+        df_curated = df_indo.sort_values(by="energy", ascending=False).head(6)
+        desc = "Lagu-lagu dengan ketukan dinamis, bertenaga, dan bersemangat tinggi."
     else:
-        df_curated = df_indo[(df_indo["valence"] >= 0.25) & (df_indo["valence"] <= 0.45)].sort_values(by="acousticness", ascending=False).head(6)
-        desc = "Kombinasi seimbang antara ketenangan akustik dan kehangatan rasa untuk menemani sore hari."
+        df_curated = df_indo.sort_values(by=["danceability", "valence"], ascending=[False, False]).head(6)
+        desc = "Lagu-lagu dengan irama dansa yang asik, ceria, dan penuh getaran positif."
 
     st.markdown(f"<div style='color: #ea580c; font-weight: 600; margin-bottom: 16px;'>{desc}</div>", unsafe_allow_html=True)
 
