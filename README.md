@@ -28,7 +28,7 @@ flowchart TD
     B --> C["fastText Zero-Shot Language ID<br>(lid.176.bin — Deterministic Filtering)"]
     C --> D["Isolated Indonesian Corpus<br>(1,508 Trek Lagu Indonesia)"]
     D --> E["NLP Text Preprocessing<br>(Regex Sanitization, Noise & Metadata Stripping)"]
-    E --> F["Dense Semantic Vectorization<br>(paraphrase-multilingual-MiniLM-L12-v2 | d=384)"]
+    E --> F["Dense Semantic Vectorization<br>(paraphrase-multilingual-mpnet-base-v2 | d=768)"]
     F --> G["L2 Vector Normalization<br>(Unit Sphere Projection)"]
     G --> H["FAISS Vector Indexing<br>(IndexFlatIP — Sub-Millisecond Cosine ANN)"]
     H --> I["Model Artifact Serialization<br>(.parquet + .npy + .faiss)"]
@@ -47,8 +47,8 @@ flowchart TD
    - Membersihkan artefak struktural lirik (label `[Chorus]`, `[Verse]`, penanda akor nada).
    - Normalisasi tanda baca dan spasi untuk memaksimalkan retensi makna saat ditransformasikan ke embedding.
 4. **Pemodelan Semantik Lirik (Sentence Transformers):**
-   - Menggunakan arsitektur `paraphrase-multilingual-MiniLM-L12-v2` untuk memetakan lirik ke dalam ruang vektor padat (*dense embedding space*) berdimensi 384.
-   - Menghubungkan sinonim, tema, dan nuansa emosional puisi secara kontekstual.
+   - Menggunakan arsitektur `paraphrase-multilingual-mpnet-base-v2` untuk memetakan lirik ke dalam ruang vektor padat (*dense embedding space*) berdimensi 768.
+   - Model MPNet yang lebih besar ini menangkap nuansa gaya bahasa antar genre secara lebih akurat, menghubungkan sinonim, tema, dan emosi puisi secara kontekstual.
 5. **Pengindeksan Vektor Skalabilitas Tinggi (FAISS):**
    - Normalisasi vektor $L_2$ memungkinkan komputasi *Inner Product* berfungsi identik dengan *Cosine Similarity*.
    - Menggunakan `faiss.IndexFlatIP` untuk pencarian tetangga terdekat (*Approximate Nearest Neighbor*) dengan latensi **< 5 milidetik**.
@@ -79,8 +79,8 @@ Aplikasi web interaktif dibangun menggunakan **Streamlit** dengan desain bertema
 | Berkas Artefak | Format | Dimensi / Ukuran | Deskripsi |
 | :--- | :--- | :--- | :--- |
 | `df_lagu_indo.parquet` | Apache Parquet | 1.508 baris × 12 kolom | Metadata trek, metrik audio Spotify, dan teks lirik bersih |
-| `embeddings_lagu_indo.npy` | NumPy Matrix | (1508, 384) | Matriks vektor representasi semantik hasil Transformer |
-| `index_lagu_indo.faiss` | FAISS Binary Index | 1.508 vektor (d=384) | Indeks vektor *Inner Product* untuk pencarian tetangga terdekat |
+| `embeddings_lagu_indo.npy` | NumPy Matrix | (1508, 768) | Matriks vektor representasi semantik hasil Transformer |
+| `index_lagu_indo.faiss` | FAISS Binary Index | 1.508 vektor (d=768) | Indeks vektor *Inner Product* untuk pencarian tetangga terdekat |
 
 ---
 
@@ -146,7 +146,7 @@ Proyek ini dirancang agar siap dideploy secara instan ke **Streamlit Community C
 
 ## 🛠️ Tumpukan Teknologi (Tech Stack)
 
-* **Machine Learning & NLP:** `sentence-transformers` (`paraphrase-multilingual-MiniLM-L12-v2`), `faiss-cpu`, `fastText`, `scikit-learn`, `numpy`
+* **Machine Learning & NLP:** `sentence-transformers` (`paraphrase-multilingual-mpnet-base-v2`), `faiss-cpu`, `fastText`, `scikit-learn`, `numpy`
 * **Data Engineering & Storage:** `pandas`, `pyarrow` (Parquet)
 * **Web Application & UI Framework:** `streamlit`, Custom CSS Glassmorphism & Responsive Micro-interactions
 * **Data Source:** Spotify Global Track & Lyrics Dataset (~955K records)
