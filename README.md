@@ -150,7 +150,7 @@ NadaFana/
 
 1. **Clone Repositori:**
    ```bash
-   git clone https://github.com/username/NadaFana.git
+   git clone https://github.com/noorafaelhakimfaudka-droid/NadaFana.git
    cd NadaFana
    ```
 
@@ -199,9 +199,16 @@ NadaFana/
 
 ---
 
+## 👤 Pengembang
+
+**Noorafael Hakim Faudka**
+- GitHub: [@noorafaelhakimfaudka-droid](https://github.com/noorafaelhakimfaudka-droid)
+
+---
+
 ## 📄 Lisensi
 
-Didistribusikan di bawah lisensi MIT. Lihat berkas `LICENSE` untuk informasi lebih lanjut.
+Didistribusikan di bawah lisensi MIT. Lihat berkas [LICENSE](LICENSE) untuk informasi lebih lanjut.
 
 ---
 
