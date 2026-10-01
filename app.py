@@ -5,12 +5,33 @@ Ultra-polished Modern UI/UX Streamlit Interface
 
 import base64
 import html
+import logging
 import os
+import warnings
 
 # Batasi thread linear algebra untuk mencegah OpenBLAS / Windows memory paging exhaustion
 os.environ["OPENBLAS_NUM_THREADS"] = "1"
 os.environ["OMP_NUM_THREADS"] = "1"
 os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+# Redam peringatan unauthenticated request dari Hugging Face Hub
+logging.getLogger("huggingface_hub").setLevel(logging.ERROR)
+logging.getLogger("transformers").setLevel(logging.ERROR)
+try:
+    import huggingface_hub.utils.logging as hf_logging
+    hf_logging.set_verbosity_error()
+except Exception:
+    pass
+try:
+    import huggingface_hub.utils._http as hf_http
+    hf_http._WARNED_TOPICS.add("")
+    hf_http._WARNED_TOPICS.add("Warning")
+except Exception:
+    pass
+warnings.filterwarnings("ignore", category=UserWarning, module="huggingface_hub")
+warnings.filterwarnings("ignore", message=".*unauthenticated requests.*")
 
 import numpy as np
 import pandas as pd
@@ -812,14 +833,22 @@ def load_tfidf_matcher(df_indo):
 
 @st.cache_resource(show_spinner="Menyiapkan kecerdasan bahasa...")
 def load_embed_model():
-    """Memuat transformer dengan penanganan memori aman untuk Windows."""
+    """Memuat transformer dengan penanganan memori aman & offline-first."""
     try:
         from sentence_transformers import SentenceTransformer
-        model = SentenceTransformer(
-            EMBED_MODEL_NAME,
-            model_kwargs={"low_cpu_mem_usage": False}
-        )
-        return model
+        # Prioritaskan pemuatan dari cache lokal tanpa request HTTP
+        try:
+            return SentenceTransformer(
+                EMBED_MODEL_NAME,
+                local_files_only=True,
+                model_kwargs={"low_cpu_mem_usage": False}
+            )
+        except Exception:
+            # Fallback jika model belum tersimpan di cache lokal
+            return SentenceTransformer(
+                EMBED_MODEL_NAME,
+                model_kwargs={"low_cpu_mem_usage": False}
+            )
     except Exception:
         return None
 
