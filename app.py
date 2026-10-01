@@ -889,7 +889,7 @@ def rekomendasikan_dari_index(df_indo, embeddings, idx_lagu, jumlah=5, bobot_aud
     """
     Rekomendasi hybrid cerdas:
     Memadukan kecocokan irama & nuansa audio Spotify (valence, acousticness, energy, danceability)
-    dengan resonansi semantik lirik (MiniLM embeddings).
+    dengan resonansi semantik lirik (mpnet-base-v2 embeddings, 768 dimensi).
     Diperkuat rescale similarity, artist boost, cluster bonus, dan diversity.
     """
     n = len(df_indo)
@@ -1176,6 +1176,46 @@ if missing:
         st.code(os.path.basename(m))
     st.stop()
 
+# ── Sidebar Informasi & Profil Pengembang ──
+with st.sidebar:
+    st.markdown("""
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+        <div style="width: 10px; height: 10px; border-radius: 50%; background: #1DB954; box-shadow: 0 0 8px #1DB954;"></div>
+        <span style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 800; color: #fff; letter-spacing: 1px;">
+            <span style="color: #1DB954;">NADA</span>FANA
+        </span>
+    </div>
+    <div style="font-size: 0.82rem; color: #b3b3b3; line-height: 1.5; margin-bottom: 16px;">
+        AI-Powered Indonesian Music Discovery & Multimodal Recommendation Engine.
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("---")
+    st.markdown("##### 👤 Pengembang & Riset")
+    st.markdown("""
+    **Rafael Hakim Souissa**  
+    GitHub: [`@noorafaelhakimfaudka-droid`](https://github.com/noorafaelhakimfaudka-droid)  
+    [Lihat di GitHub →](https://github.com/noorafaelhakimfaudka-droid/NadaFana)
+    """)
+
+    st.markdown("---")
+    st.markdown("##### 🧠 Arsitektur Model")
+    st.markdown("""
+    - **Language ID:** fastText `lid.176.bin` (>98% acc)
+    - **Transformer:** `mpnet-base-v2` (768 dimensi)
+    - **Vector Search:** FAISS `IndexFlatIP` (< 2ms)
+    - **Re-ranking:** Multimodal Hybrid (Lirik + Audio DNA)
+    - **Audio DNA:** Spotify Continuous Psychoacoustic
+    """)
+
+    st.markdown("---")
+    st.markdown("##### 📊 Statistik Korpus")
+    st.markdown(f"""
+    - **Total Trek:** {len(df_indo):,} lagu terkurasi
+    - **Klaster Audio Vibes:** 5 klaster
+    - **Dimensi Embedding:** {embeddings.shape[1]} fitur
+    """)
+
 # ── Cinematic Hero Billboard ──
 hero_html = f"""<div style="
     background: linear-gradient(135deg, rgba(29, 185, 84, 0.08) 0%, rgba(18, 18, 18, 0.95) 50%, rgba(29, 185, 84, 0.05) 100%);
@@ -1210,7 +1250,7 @@ hero_html = f"""<div style="
                 <span style="color: #1DB954;">NADA</span><span style="color: #ffffff;">FANA</span>
             </div>
             <div style="color: #a0a0a0; font-size: 0.85rem; font-weight: 500; margin-top: 4px; letter-spacing: 0.5px;">
-                Rekomendasi Musik Indonesia Bertenaga AI
+                Rekomendasi Musik Indonesia Bertenaga AI · <span style="color: #1DB954; font-weight: 600;">Rafael Hakim Souissa</span>
             </div>
         </div>
     </div>
@@ -1220,6 +1260,15 @@ hero_html = f"""<div style="
             <svg width="14" height="14" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
             <span style="color: #1DB954; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.02em;">{len(df_indo):,} lagu</span>
         </div>
+        <a href="https://github.com/noorafaelhakimfaudka-droid/NadaFana" target="_blank" style="
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 9999px; padding: 8px 18px; color: #ffffff; text-decoration: none;
+            font-size: 0.84rem; font-weight: 600; transition: all 0.2s ease;
+        ">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+        </a>
     </div>
 </div>
 </div>"""
@@ -1266,7 +1315,7 @@ with col_console:
         "Keseimbangan Lirik vs Irama",
         min_value=0,
         max_value=100,
-        value=60,
+        value=50,
         step=5,
         key="slider_bobot_audio",
         label_visibility="collapsed",
@@ -1428,6 +1477,25 @@ if "hasil_utama" in st.session_state:
     else:
         st.markdown(f"#### Rekomendasi Serupa untuk *{st.session_state['ref_name_utama']}*:")
     render_hasil_cards(df_indo, st.session_state["hasil_utama"], show_player=show_player)
+
+# ── Footer Portofolio Spotify Glassmorphism ──
+st.markdown("""
+<div style="margin-top: 60px; padding: 32px 20px 24px 20px; border-top: 1px solid rgba(255,255,255,0.08); text-align: center; color: #727272; font-size: 0.82rem;">
+    <div style="font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1rem; color: #ffffff; letter-spacing: 1px; margin-bottom: 6px;">
+        <span style="color: #1DB954;">NADA</span>FANA — Nada yang Tak Pernah Fana
+    </div>
+    <div style="margin-bottom: 8px; color: #a0a0a0;">
+        Karya riset & rekayasa perangkat lunak oleh 
+        <strong style="color: #ffffff;">Rafael Hakim Souissa</strong> · 
+        <a href="https://github.com/noorafaelhakimfaudka-droid/NadaFana" target="_blank" style="color: #1DB954; text-decoration: none; font-weight: 600;">
+            GitHub @noorafaelhakimfaudka-droid
+        </a>
+    </div>
+    <div style="font-size: 0.74rem; color: #535353; letter-spacing: 0.3px;">
+        Hugging Face Transformers (mpnet-base-v2, 768-d) · FAISS Vector Search · Spotify Continuous Audio DNA · Streamlit
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 
 
