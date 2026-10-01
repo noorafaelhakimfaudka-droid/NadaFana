@@ -1,0 +1,60 @@
+# ==========================================
+# NadaFana — .gitignore
+# ==========================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Operating System files
+Thumbs.db
+.DS_Store
+desktop.ini
+ehthumbs.db
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# Streamlit local secrets
+.streamlit/secrets.toml
+
+# Scratch, debug, and temporary scripts
+_*.py
+_*.txt
+test_*.py
+analyze_*.py
+patch_*.py
+*.bak
+*.tmp
+*.log
+
+# Large binary models / raw Kaggle datasets (>100MB)
+# Note: GitHub has a strict 100MB per-file limit.
+# fastText lid.176.bin is ~131MB and should be downloaded dynamically if needed.
+lid.176.bin
+*.csv
+*.zip
+*.tar.gz
