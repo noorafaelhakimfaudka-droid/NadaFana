@@ -199,10 +199,11 @@ NadaFana/
 
 ---
 
-## 👤 Pengembang
+## 👤 Pengembang & Riset
 
-**Noorafael Hakim Faudka**
+**Rafael Hakim Souissa**
 - GitHub: [@noorafaelhakimfaudka-droid](https://github.com/noorafaelhakimfaudka-droid)
+- Email: [noorafaelfaudka@gmail.com](mailto:noorafaelfaudka@gmail.com)
 
 ---
 
